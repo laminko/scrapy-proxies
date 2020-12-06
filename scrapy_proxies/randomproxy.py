@@ -39,6 +39,7 @@ class RandomProxy(object):
     def __init__(self, settings):
         self.mode = settings.get("PROXY_MODE")
         self.proxy_list = settings.get("PROXY_LIST")
+        self.dont_remove_proxy = settings.get("DONT_REMOVE_PROXY")
         self.chosen_proxy = ""
         self.chosen_login = ""
 
@@ -103,6 +104,14 @@ class RandomProxy(object):
         return self.chosen_login
 
     def remove_proxy(self, proxy_address):
+        if self.dont_remove_proxy:
+            log.info(
+                "Will not remove proxy {} because don't remove proxy is set to {}.".format(
+                    proxy_address, self.dont_remove_proxy
+                )
+            )
+            return
+
         try:
             logins = self.proxies[proxy_address]
             if logins:
